@@ -4,8 +4,7 @@ var isLetter = require('is-letter');
 //require objects/exports
 var Word = require('./word.js');
 var Game = require('./game.js');
-//hangman graphic
-var hangManDisplay = Game.newWord.hangman;
+
 
 //set the maxListener
 require('events').EventEmitter.prototype._maxListeners = 100;
@@ -16,9 +15,6 @@ var hangman = {
   guessesRemaining: 10,
   //empty array to hold letters guessed by user. And checks if the user guessed the letter already
   guessedLetters: [],
-  //index to display graphic
-  display: 0,
-  currentWord: null,
   //asks user if they are ready to play
   startGame: function() {
     var that = this;
@@ -30,18 +26,18 @@ var hangman = {
     inquirer.prompt([{
       name: "play",
       type: "confirm",
-      message: "Ready to play?"
+      message: "Are you ready to play?"
     }]).then(function(answer) {
       if(answer.play){
         that.newGame();
       } else{
-        console.log("Fine, I didn't want to play anyway..");
+        console.log("Too Bad, Maybe next time...");
       }
     })},
   //if they want to play starts new game.
   newGame: function() {
     if(this.guessesRemaining === 10) {
-      console.log("Okay! Here we go!");
+      console.log("Great! Here we go!");
       console.log('*****************');
       //generates random number based on the wordBank
       var randNum = Math.floor(Math.random()*this.wordBank.length);
@@ -89,12 +85,11 @@ var hangman = {
           var found = that.currentWord.checkIfLetterFound(letterReturned);
           //if none were found tell user they were wrong
           if(found === 0){
-            console.log('Nope! You guessed wrong.');
+            console.log('Wrong! You guessed wrong.');
             that.guessesRemaining--;
             that.display++;
             console.log('Guesses remaining: ' + that.guessesRemaining);
-            console.log(hangManDisplay[(that.display)-1]);
-
+            
             console.log('\n*******************');
             console.log(that.currentWord.wordRender());
             console.log('\n*******************');
@@ -105,7 +100,7 @@ var hangman = {
               //checks to see if user won
               if(that.currentWord.didWeFindTheWord() === true){
                 console.log(that.currentWord.wordRender());
-                console.log('Congratulations! You won the game!!!');
+                console.log('Fantastic! You Won the Game!!!');
                 // that.startGame();
               } else{
                 // display the user how many guesses remaining
@@ -118,11 +113,11 @@ var hangman = {
           if(that.guessesRemaining > 0 && that.currentWord.wordFound === false) {
             that.keepPromptingUser();
           }else if(that.guessesRemaining === 0){
-            console.log('Game over!');
-            console.log('The word you were guessing was: ' + that.currentWord.word);
+            console.log('GAME OVER !!! You have poor vocabulary');
+            console.log('The word you were trying to guess was: ' + that.currentWord.word);
           }
         } else{
-            console.log("You've guessed that letter already. Try again.")
+            console.log("You've guessed that letter already. Please Try again.")
             that.keepPromptingUser();
           }
     });
